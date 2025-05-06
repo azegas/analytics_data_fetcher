@@ -1,4 +1,29 @@
+import requests
 from bs4 import BeautifulSoup
+
+
+def extract_category_from_detail_page(job_url):
+    try:
+        response = requests.get(job_url)
+        response.raise_for_status()
+
+        # Parse the HTML content
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # Find the <a> tag with 'darbo-pasiulymai' in the href attribute
+        category_tag = soup.find(
+            "a", href=lambda value: value and "darbo-pasiulymai" in value
+        )
+
+        # Extract and print the category text
+        if category_tag:
+            category = category_tag.get_text(strip=True)
+            return category
+        else:
+            print("Category not found.")
+
+    except requests.RequestException:
+        return None
 
 
 def extract_articles(response):

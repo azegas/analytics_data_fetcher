@@ -8,6 +8,7 @@ from extractors import (
     extract_salary,
     extract_when_posted,
     extract_city,
+    extract_category_from_detail_page,
 )
 import json
 import os
@@ -23,6 +24,9 @@ from log_config import logger
 pagesToFetch = 2  # how many pages to fetch?
 
 load_dotenv()
+
+# start going from the last page, take only those whose expiration is less than 1 day (hours)
+# get rekvizitai info
 
 
 def fetch_cvbankas_jobs():
@@ -49,6 +53,9 @@ def fetch_cvbankas_jobs():
                     "salary": extract_salary(job),
                     "posted": extract_when_posted(job),
                     "city": extract_city(job),
+                    "category": extract_category_from_detail_page(
+                        extract_link(job)
+                    ),
                 }
                 jobs.append(job_data)
 
