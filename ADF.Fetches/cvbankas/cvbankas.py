@@ -16,6 +16,8 @@ from config import (
     CVBANKAS_IGNORE_WORDS_IN_JOB_COMPANY,
 )
 
+pagesToFetch = 20  # how many pages to fetch?
+
 
 load_dotenv()
 
@@ -24,9 +26,17 @@ def fetch_cvbankas_jobs():
     logger.info("Fetching CVBankas jobs...")
     jobs = []
 
-    for keyword in CVBANKAS_KEYWORDS:
-        for page in range(1, 10):  # how many pages to fetch?
-            url = f"https://en.cvbankas.lt/?keyw={keyword}&page={page}"
+    keywords = CVBANKAS_KEYWORDS or [None]
+
+    for keyword in keywords:
+        for page in range(1, pagesToFetch):
+
+            url = "https://en.cvbankas.lt/"
+
+            if keyword:
+                url += f"?keyw={keyword}&page={page}"
+            else:
+                url += f"?page={page}"
 
             try:
                 response = requests.get(url)
@@ -135,8 +145,9 @@ def save_cvbankas_jobs(jobs):
 
 def main():
     jobs = fetch_cvbankas_jobs()
-    filtered_jobs = filter_cvbankas_jobs(jobs)
-    save_cvbankas_jobs(filtered_jobs)
+    # filtered_jobs = filter_cvbankas_jobs(jobs)
+    # save_cvbankas_jobs(filtered_jobs)
+    save_cvbankas_jobs(jobs)
 
 
 if __name__ == "__main__":
