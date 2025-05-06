@@ -1,5 +1,14 @@
 import requests
-from bs4 import BeautifulSoup
+from extractors import (
+    extract_articles,
+    extract_id,
+    extract_link,
+    extract_title,
+    extract_company,
+    extract_salary,
+    extract_when_posted,
+    extract_city,
+)
 import json
 import os
 import sys
@@ -28,9 +37,7 @@ def fetch_cvbankas_jobs():
             response = requests.get(url)
             response.raise_for_status()
 
-            articles = find_all_articles(response)
-
-            breakpoint()
+            articles = extract_articles(response)
 
             for job in articles:
 
@@ -50,60 +57,6 @@ def fetch_cvbankas_jobs():
 
     logger.info(f"Fetched {len(jobs)} job listings")
     return jobs
-
-
-def find_all_articles(response):
-    soup = BeautifulSoup(response.text, "html.parser")
-    job_listings = soup.find_all("article", class_="list_article")
-    return job_listings
-
-
-def extract_link(job):
-    job_link_tag = job.find("a", href=True)
-    return job_link_tag["href"] if job_link_tag else None
-
-
-def extract_id(job):
-    return job.get("id", "").replace("job_ad_", "")
-
-
-def extract_title(job):
-    return job.find("h3", class_="list_h3").text.strip()
-
-
-def extract_company(job):
-    company_elem = job.find("span", class_="dib mt5 mr5")
-    if company_elem:
-        return company_elem.text.strip()
-    return "N/A"
-
-
-def extract_salary(job):
-    salary_elem = job.find("span", class_="salary_amount")
-    if not salary_elem:
-        return "N/A"
-
-    salary = salary_elem.text.strip()
-    salary_period = job.find("span", class_="salary_period")
-    salary_type = job.find("span", class_="salary_calculation")
-
-    if salary_period and salary_type:
-        return f"{salary} {salary_period.text.strip()} ({salary_type.text.strip()})"
-    return salary
-
-
-def extract_when_posted(job):
-    time_elem = job.find("span", class_="txt_list_2")
-    if time_elem:
-        return time_elem.text.strip()
-    else:
-        important_elem = job.find("span", class_="txt_list_important")
-        return important_elem.text.strip() if important_elem else None
-
-
-def extract_city(job):
-    city_elem = job.find("span", class_="list_city")
-    return city_elem.text.strip() if city_elem else "N/A"
 
 
 def save_cvbankas_jobs(jobs):
