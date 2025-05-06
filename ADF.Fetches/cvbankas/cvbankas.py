@@ -10,14 +10,8 @@ from dotenv import load_dotenv
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from log_config import logger
-from config import (
-    CVBANKAS_KEYWORDS,
-    CVBANKAS_IGNORE_WORDS_IN_JOB_TITLE,
-    CVBANKAS_IGNORE_WORDS_IN_JOB_COMPANY,
-)
 
-pagesToFetch = 20  # how many pages to fetch?
-
+pagesToFetch = 2  # how many pages to fetch?
 
 load_dotenv()
 
@@ -26,49 +20,62 @@ def fetch_cvbankas_jobs():
     logger.info("Fetching CVBankas jobs...")
     jobs = []
 
-    keywords = CVBANKAS_KEYWORDS or [None]
+    for page in range(1, pagesToFetch):
 
-    for keyword in keywords:
-        for page in range(1, pagesToFetch):
+        url = f"https://en.cvbankas.lt/?page={page}"
 
-            url = "https://en.cvbankas.lt/"
+        try:
+            response = requests.get(url)
+            response.raise_for_status()
 
-            if keyword:
-                url += f"?keyw={keyword}&page={page}"
-            else:
-                url += f"?page={page}"
+            articles = find_all_articles(response)
 
-            try:
-                response = requests.get(url)
-                response.raise_for_status()
-                soup = BeautifulSoup(response.text, "html.parser")
-                job_listings = soup.find_all("article", class_="list_article")
+            breakpoint()
 
-                for job in job_listings:
-                    job_data = {
-                        "title": job.find("h3", class_="list_h3").text.strip(),
-                        "company": job.find(
-                            "span", class_="dib mt5 mr5"
-                        ).text.strip(),
-                        "salary": extract_salary(job),
-                        "keyword": keyword,
-                        "image_link": (
-                            job.find("img")["src"]
-                            if job.find("img")
-                            else "N/A"
-                        ),
-                        "job_posted": extract_job_posted(job),
-                        "city": extract_city(job),
-                    }
-                    jobs.append(job_data)
+            for job in articles:
 
-            except Exception as e:
-                logger.error(
-                    f"Error fetching data for {keyword} page {page}: {e}"
-                )
+                job_data = {
+                    "job_id": extract_id(job),
+                    "link": extract_link(job),
+                    "title": extract_title(job),
+                    "company": extract_company(job),
+                    "salary": extract_salary(job),
+                    "posted": extract_when_posted(job),
+                    "city": extract_city(job),
+                }
+                jobs.append(job_data)
+
+        except Exception as e:
+            logger.error(f"Error fetching data for page {page}: {e}")
 
     logger.info(f"Fetched {len(jobs)} job listings")
     return jobs
+
+
+def find_all_articles(response):
+    soup = BeautifulSoup(response.text, "html.parser")
+    job_listings = soup.find_all("article", class_="list_article")
+    return job_listings
+
+
+def extract_link(job):
+    job_link_tag = job.find("a", href=True)
+    return job_link_tag["href"] if job_link_tag else None
+
+
+def extract_id(job):
+    return job.get("id", "").replace("job_ad_", "")
+
+
+def extract_title(job):
+    return job.find("h3", class_="list_h3").text.strip()
+
+
+def extract_company(job):
+    company_elem = job.find("span", class_="dib mt5 mr5")
+    if company_elem:
+        return company_elem.text.strip()
+    return "N/A"
 
 
 def extract_salary(job):
@@ -85,7 +92,7 @@ def extract_salary(job):
     return salary
 
 
-def extract_job_posted(job):
+def extract_when_posted(job):
     time_elem = job.find("span", class_="txt_list_2")
     if time_elem:
         return time_elem.text.strip()
@@ -97,33 +104,6 @@ def extract_job_posted(job):
 def extract_city(job):
     city_elem = job.find("span", class_="list_city")
     return city_elem.text.strip() if city_elem else "N/A"
-
-
-def filter_cvbankas_jobs(jobs):
-    def is_valid_job(job):
-        if job["salary"] == "N/A":
-            return False
-        try:
-            salary_value = float(
-                "".join(filter(str.isdigit, job["salary"].split("-")[0]))
-            )
-            return (
-                salary_value >= 3000
-                and not any(
-                    keyword.lower() in job["title"].lower()
-                    for keyword in CVBANKAS_IGNORE_WORDS_IN_JOB_TITLE
-                )
-                and not any(
-                    keyword.lower() in job["company"].lower()
-                    for keyword in CVBANKAS_IGNORE_WORDS_IN_JOB_COMPANY
-                )
-            )
-        except ValueError:
-            return False
-
-    filtered_jobs = list(filter(is_valid_job, jobs))
-    logger.info(f"Filtered {len(filtered_jobs)} out of {len(jobs)} jobs")
-    return filtered_jobs
 
 
 def save_cvbankas_jobs(jobs):
@@ -145,8 +125,6 @@ def save_cvbankas_jobs(jobs):
 
 def main():
     jobs = fetch_cvbankas_jobs()
-    # filtered_jobs = filter_cvbankas_jobs(jobs)
-    # save_cvbankas_jobs(filtered_jobs)
     save_cvbankas_jobs(jobs)
 
 
