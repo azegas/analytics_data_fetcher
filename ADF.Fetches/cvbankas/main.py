@@ -1,5 +1,5 @@
 from job_utils import (
-    fetch_cvbankas_jobs,
+    fetch_details_of_each_job,
     save_cvbankas_jobs,
     create_list_of_expiring_job_ads,
 )
@@ -18,13 +18,11 @@ def main():
 
     expiring_job_ads = create_list_of_expiring_job_ads()
 
-    breakpoint()
-
     # Fetch jobs from CVBankas
-    jobs = fetch_cvbankas_jobs(expiring_job_ads)
+    jobs = fetch_details_of_each_job(expiring_job_ads)
 
-    # # Save the fetched jobs to a file
-    # save_cvbankas_jobs(jobs)
+    # Save the fetched jobs to a file
+    save_cvbankas_jobs(jobs)
 
 
 if __name__ == "__main__":
