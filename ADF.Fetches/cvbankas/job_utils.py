@@ -13,7 +13,7 @@ extractor_job = ExtractorJob()
 
 load_dotenv()
 
-fetch_limit = int(os.getenv("TEST_A_FEW", 0))
+fetch_limit = int(os.getenv("FETCH_LIMIT", 0))
 
 
 def create_list_of_expiring_job_ads():
@@ -33,6 +33,7 @@ def create_list_of_expiring_job_ads():
         # Iterate from the last page to the first page
         for page in range(last_page_number, 0, -1):
             url = f"{URL}/?page={page}"
+
             response = requests.get(url)
             response.raise_for_status()
 
@@ -82,13 +83,11 @@ def extract_details(list_of_expiring_job_ads):
     # Apply the limit only if it's greater than 0
     if fetch_limit > 0:
         ads_to_process = list_of_expiring_job_ads[:fetch_limit]
-        logger.info(
-            f"Fetching limit exists, fetching {fetch_limit} job ads..."
-        )
+        logger.info(f"Fetching limit exists, fetching {fetch_limit} job ads")
     else:
         ads_to_process = list_of_expiring_job_ads
         logger.info(
-            f"Fetching limit does not exists, fetching {len(list_of_expiring_job_ads)} job ads..."
+            f"Fetching limit does not exists, fetching {len(list_of_expiring_job_ads)} job ads"
         )
 
     logger.info("Fetch started...")

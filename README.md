@@ -1,6 +1,6 @@
 # analytics_data_fetcher
 
-- [analytics\_data\_fetcher](#analytics_data_fetcher)
+- [analytics_data_fetcher](#analytics_data_fetcher)
   - [Architecture](#architecture)
   - [Fetch data from CVBankas MANUALLY](#fetch-data-from-cvbankas-manually)
     - [Fetching for the first time](#fetching-for-the-first-time)
@@ -29,7 +29,7 @@
 - Open the project in VsCode
 - Copy `.env_template` file and rename it to `.env` (this is where you will put your own configurations)
 - Change `BASE_DIR` in `.env` file to the path where you have saved this repository
-- Change `TEST_A_FEW` in `.env` file to a small number, like 5 - this is for testing purposes, so you don't have to wait for a long time to fetch data for ALL the jobs (can change this value later, or leave it as 0 to fetch all the jobs)
+- Change `FETCH_LIMIT` in `.env` file to a small number, like 5 - this is for testing purposes, so you don't have to wait for a long time to fetch data for ALL the jobs (can change this value later, or leave it as 0 to fetch all the jobs)
 - Open terminal `` Ctrl + `  ``
 - Make sure it's cmd(Command Prompt) terminal that has opened, if not, change it to cmd by clicking on the dropdown arrow in the terminal and selecting "Select Default Profile" and then "Command Prompt"
 - Run `cd ADF.Fetches`, here we will create our python virtual environment
