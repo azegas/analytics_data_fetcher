@@ -67,15 +67,16 @@ def create_list_of_expiring_job_ads():
 
 
 def extract_details(list_of_expiring_job_ads):
-
     logger.info(
         f"Received list of expiring job ads {len(list_of_expiring_job_ads)}",
     )
     logger.info("Fetching details about them...")
 
+    total_ads = len(list_of_expiring_job_ads)
+    fetched_count = 0
     jobs = []
 
-    for job_ad in list_of_expiring_job_ads[:5]:
+    for job_ad in list_of_expiring_job_ads[:3]:
 
         job_id = job_ad["job_id"]
         job_link = job_ad["link"]
@@ -96,7 +97,9 @@ def extract_details(list_of_expiring_job_ads):
                 "job_cities": extractor_job.extract_cities(job_link),
                 "job_views": job_stats["views"],
                 "job_applications": job_stats["applications"],
-                "company_info": {
+                "job_salary": salary_details["salary"],
+                "job_salary_period": salary_details["period"],
+                "company_details": {
                     "company_name": extractor_job.extract_company_name(
                         job_link
                     ),
@@ -106,11 +109,18 @@ def extract_details(list_of_expiring_job_ads):
                 },
             }
             jobs.append(job_data)
+            fetched_count += 1
+            remaining = total_ads - fetched_count
+            logger.info(
+                f"Fetched {fetched_count}/{total_ads} | Remaining: {remaining}"
+            )
 
         except Exception as e:
             logger.error(f"Error fetching data for job ad {job_link}: {e}")
 
-    logger.info(f"Fetched data for {len(jobs)} job listings")
+    logger.info(
+        f"Finished fetching. Fetched {fetched_count} out of {total_ads}."
+    )
     return jobs
 
 

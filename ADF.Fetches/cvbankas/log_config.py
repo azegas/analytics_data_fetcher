@@ -15,9 +15,13 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
+# Get log level from environment or fallback to INFO
+log_level_str = os.getenv("LOG_LEVEL", "INFO").upper()
+log_level = getattr(logging, log_level_str, logging.INFO)
+
 # Configure logging
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger.setLevel(log_level)
 
 # Create formatters
 formatter = logging.Formatter(
