@@ -76,7 +76,7 @@ def extract_details(list_of_expiring_job_ads):
     fetched_count = 0
     jobs = []
 
-    for job_ad in list_of_expiring_job_ads[:3]:
+    for job_ad in list_of_expiring_job_ads:
 
         job_id = job_ad["job_id"]
         job_link = job_ad["link"]
