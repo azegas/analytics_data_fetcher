@@ -8,12 +8,13 @@ from config import URL
 from extractor_article import ExtractorArticle
 from extractor_job import ExtractorJob
 
+extractor_article = ExtractorArticle()
+extractor_job = ExtractorJob()
+
 
 def create_list_of_expiring_job_ads():
     expiring_ads = []
     pages_count = 0
-
-    extractor_article = ExtractorArticle()
 
     try:
         response = requests.get(URL)
@@ -38,6 +39,7 @@ def create_list_of_expiring_job_ads():
                 hours_left = extractor_article.extract_hours_left(job)
                 if hours_left:
                     job_data = {
+                        "job_id": extractor_job.extract_id(job),
                         "link": extractor_article.extract_link(job),
                         "hours_left": hours_left,
                         "from_page": page,
@@ -64,44 +66,49 @@ def create_list_of_expiring_job_ads():
         return expiring_ads
 
 
-# duok jam ne pages to fetch, BET TIK array of articles to make the calls for
-def fetch_details_of_each_job(list_of_expiring_job_ads):
+def extract_details(list_of_expiring_job_ads):
 
     logger.info(
         f"Received list of expiring job ads {len(list_of_expiring_job_ads)}",
     )
     logger.info("Fetching details about them...")
 
-    extractor_job = ExtractorJob()
-
     jobs = []
 
     for job_ad in list_of_expiring_job_ads[:5]:
-        job_url = job_ad["link"]
+
+        job_id = job_ad["job_id"]
+        job_link = job_ad["link"]
 
         try:
-            response = requests.get(job_url)
+            response = requests.get(job_link)
             response.raise_for_status()
 
-            # job_data = {
-            #     "job_id": extractor_job.extract_id(article),
-            #     "link": extractor_job.extract_link(article),
-            #     "title": extractor_job.extract_title(article),
-            #     "company": extractor_job.extract_company(article),
-            #     "salary": extractor_job.extract_salary(article),
-            #     "posted": extractor_job.extract_when_posted(article),
-            #     "city": extractor_job.extract_cities(job_url),
-            #     "category": extractor_job.extract_category(job_url),
-            # }
+            job_stats = extractor_job.extract_statistics(job_link)
+            company_details = extractor_job.extract_company_details(job_link)
+            salary_details = extractor_job.extract_salary(job_link)
 
             job_data = {
-                "job_link": job_url,
-                "category": extractor_job.extract_category(job_url),
+                "job_id": job_id,
+                "job_link": job_link,
+                "job_title": extractor_job.extract_title(job_link),
+                "job_category": extractor_job.extract_category(job_link),
+                "job_cities": extractor_job.extract_cities(job_link),
+                "job_views": job_stats["views"],
+                "job_applications": job_stats["applications"],
+                "company_info": {
+                    "company_name": extractor_job.extract_company_name(
+                        job_link
+                    ),
+                    "average_salary": company_details.get("average_salary"),
+                    "employee_count": company_details.get("employee_count"),
+                    "revenue": company_details.get("revenue"),
+                },
             }
             jobs.append(job_data)
 
         except Exception as e:
-            logger.error(f"Error fetching data for job ad {job_url}: {e}")
+            logger.error(f"Error fetching data for job ad {job_link}: {e}")
 
     logger.info(f"Fetched data for {len(jobs)} job listings")
     return jobs
