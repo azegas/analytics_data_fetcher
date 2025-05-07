@@ -7,13 +7,20 @@ from config import URL
 from dotenv import load_dotenv
 from extractor_article import ExtractorArticle
 from extractor_job import ExtractorJob
+import time
 
 extractor_article = ExtractorArticle()
 extractor_job = ExtractorJob()
 
 load_dotenv()
 
-fetch_limit = int(os.getenv("FETCH_LIMIT", 0))
+try:
+    fetch_limit = int(os.getenv("FETCH_LIMIT", 0))
+except ValueError:
+    fetch_limit = 0
+    logger.warning(
+        "FETCH_LIMIT in .env is not a valid integer. Defaulting to 0."
+    )
 
 
 def create_list_of_expiring_job_ads():
@@ -72,25 +79,29 @@ def create_list_of_expiring_job_ads():
 
 
 def extract_details(list_of_expiring_job_ads):
-    logger.info(
-        f"Received list of expiring job ads {len(list_of_expiring_job_ads)}",
-    )
 
     total_ads = len(list_of_expiring_job_ads)
     fetched_count = 0
     jobs = []
 
-    # Apply the limit only if it's greater than 0
-    if fetch_limit > 0:
+    if fetch_limit > total_ads:
+        ads_to_process = list_of_expiring_job_ads[:1]
+        logger.warning(
+            f"FETCH_LIMIT ({fetch_limit}) is greater than total ads ({total_ads}) "
+            f"Fetching only 1 job ad instead."
+        )
+    elif 0 < fetch_limit <= total_ads:
         ads_to_process = list_of_expiring_job_ads[:fetch_limit]
-        logger.info(f"Fetching limit exists, fetching {fetch_limit} job ads")
+        logger.info(
+            f"Fetching {fetch_limit} job ads as requested in FETCH_LIMIT"
+        )
     else:
         ads_to_process = list_of_expiring_job_ads
-        logger.info(
-            f"Fetching limit does not exists, fetching {len(list_of_expiring_job_ads)} job ads"
-        )
+        logger.info(f"Fetching all {total_ads} job ads")
 
     logger.info("Fetch started...")
+
+    time.sleep(5)
 
     for job_ad in ads_to_process:
 
