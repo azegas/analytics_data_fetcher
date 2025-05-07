@@ -35,7 +35,6 @@ class ExtractorArticle:
                 if match:
                     return int(match.group(1))
 
-            logger.debug("No 'hours left' match found.")
             return ""
 
         except Exception as e:

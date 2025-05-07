@@ -4,12 +4,16 @@ import os
 from datetime import datetime
 from log_config import logger
 from config import URL
-
+from dotenv import load_dotenv
 from extractor_article import ExtractorArticle
 from extractor_job import ExtractorJob
 
 extractor_article = ExtractorArticle()
 extractor_job = ExtractorJob()
+
+load_dotenv()
+
+fetch_limit = int(os.getenv("TEST_A_FEW", 0))
 
 
 def create_list_of_expiring_job_ads():
@@ -53,7 +57,7 @@ def create_list_of_expiring_job_ads():
 
             pages_count += 1
 
-        # logger.info(expiring_ads)
+        logger.debug(expiring_ads)
 
         logger.info(
             f"Fetched {len(expiring_ads)} expiring job ads from the last {pages_count} of {last_page_number} pages"
@@ -70,13 +74,26 @@ def extract_details(list_of_expiring_job_ads):
     logger.info(
         f"Received list of expiring job ads {len(list_of_expiring_job_ads)}",
     )
-    logger.info("Fetching details about them...")
 
     total_ads = len(list_of_expiring_job_ads)
     fetched_count = 0
     jobs = []
 
-    for job_ad in list_of_expiring_job_ads:
+    # Apply the limit only if it's greater than 0
+    if fetch_limit > 0:
+        ads_to_process = list_of_expiring_job_ads[:fetch_limit]
+        logger.info(
+            f"Fetching limit exists, fetching {fetch_limit} job ads..."
+        )
+    else:
+        ads_to_process = list_of_expiring_job_ads
+        logger.info(
+            f"Fetching limit does not exists, fetching {len(list_of_expiring_job_ads)} job ads..."
+        )
+
+    logger.info("Fetch started...")
+
+    for job_ad in ads_to_process:
 
         job_id = job_ad["job_id"]
         job_link = job_ad["link"]
@@ -124,7 +141,7 @@ def extract_details(list_of_expiring_job_ads):
     return jobs
 
 
-def save_cvbankas_jobs(jobs):
+def save_cvbankas_jobs_locally(jobs):
     data_to_save = {
         "fetch_date": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "jobs": jobs,
