@@ -95,9 +95,10 @@ class ExtractorJob:
                 return ""
 
             salary_inner_tag = soup.find("span", class_="salary_inner")
+
             if not salary_inner_tag:
                 logger.debug(f"Salary block not found for {job_url}.")
-                return ""
+                return {"salary": "", "period": ""}
 
             salary_text_tag = salary_inner_tag.find(
                 "span", class_="salary_text"

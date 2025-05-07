@@ -78,7 +78,40 @@ def create_list_of_expiring_job_ads():
         return expiring_ads
 
 
-def extract_details(list_of_expiring_job_ads):
+def extract_details_of_one(job_link):
+
+    try:
+        response = requests.get(job_link)
+        response.raise_for_status()
+
+        job_stats = extractor_job.extract_statistics(job_link)
+        company_details = extractor_job.extract_company_details(job_link)
+        salary_details = extractor_job.extract_salary(job_link)
+
+        job_data = {
+            "job_link": job_link,
+            "job_title": extractor_job.extract_title(job_link),
+            "job_category": extractor_job.extract_category(job_link),
+            "job_cities": extractor_job.extract_cities(job_link),
+            "job_views": job_stats["views"],
+            "job_applications": job_stats["applications"],
+            "job_salary": salary_details["salary"],
+            "job_salary_period": salary_details["period"],
+            "company_details": {
+                "company_name": extractor_job.extract_company_name(job_link),
+                "average_salary": company_details.get("average_salary"),
+                "employee_count": company_details.get("employee_count"),
+                "revenue": company_details.get("revenue"),
+            },
+        }
+        return job_data
+
+    except Exception as e:
+        logger.error(f"Error fetching data for job ad {job_link}: {e}")
+        return None
+
+
+def extract_details_of_many(list_of_expiring_job_ads):
 
     total_ads = len(list_of_expiring_job_ads)
     fetched_count = 0
