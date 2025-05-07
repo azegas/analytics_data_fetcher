@@ -21,7 +21,8 @@ logger.setLevel(logging.INFO)
 
 # Create formatters
 formatter = logging.Formatter(
-    "%(asctime)s [%(levelname)s] %(message)s", "%Y/%m/%d %H:%M:%S"
+    "%(asctime)s [%(levelname)s] %(funcName)s - %(message)s",
+    "%Y/%m/%d %H:%M:%S",
 )
 
 # Create handlers
