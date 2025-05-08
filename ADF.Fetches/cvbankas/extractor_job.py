@@ -1,40 +1,10 @@
-import requests
-from bs4 import BeautifulSoup
 from log_config import logger
 
 
 class ExtractorJob:
     @staticmethod
-    def _get_soup(url):
+    def extract_category(soup, job_url):
         try:
-            response = requests.get(url)
-            response.raise_for_status()
-            return BeautifulSoup(response.text, "html.parser")
-
-        except Exception as e:
-            logger.error(f"Failed to fetch or parse HTML from {url}: {e}")
-            return None
-
-    @staticmethod
-    def extract_id(job):
-        try:
-            job_id = job.get("id", "")
-            if not job_id:
-                logger.warning(f"Job ID {job_id} not found.")
-                return ""
-            return job_id.replace("job_ad_", "")
-
-        except Exception as e:
-            logger.error(f"Failed to extract job ID for {job}: {e}")
-            return ""
-
-    @staticmethod
-    def extract_category(job_url):
-        try:
-            soup = ExtractorJob._get_soup(job_url)
-            if not soup:
-                return ""
-
             category_tag = soup.find(
                 "a", href=lambda value: value and "darbo-pasiulymai" in value
             )
@@ -49,12 +19,8 @@ class ExtractorJob:
             return ""
 
     @staticmethod
-    def extract_company_name(job_url):
+    def extract_company_name(soup, job_url):
         try:
-            soup = ExtractorJob._get_soup(job_url)
-            if not soup:
-                return ""
-
             company_tag = soup.find("h2", id="jobad_company_title")
             if not company_tag:
                 logger.debug(f"Company title tag not found for ${job_url}.")
@@ -67,12 +33,8 @@ class ExtractorJob:
             return ""
 
     @staticmethod
-    def extract_cities(job_url):
+    def extract_cities(soup, job_url):
         try:
-            soup = ExtractorJob._get_soup(job_url)
-            if not soup:
-                return ""
-
             address_span = soup.find("span", itemprop="address")
             if not address_span:
                 logger.debug(f"Address span not found for ${job_url}.")
@@ -88,12 +50,8 @@ class ExtractorJob:
             return ""
 
     @staticmethod
-    def extract_salary(job_url):
+    def extract_salary(soup, job_url):
         try:
-            soup = ExtractorJob._get_soup(job_url)
-            if not soup:
-                return ""
-
             salary_inner_tag = soup.find("span", class_="salary_inner")
 
             if not salary_inner_tag:
@@ -128,12 +86,8 @@ class ExtractorJob:
             return {"salary": "", "period": ""}
 
     @staticmethod
-    def extract_title(job_url):
+    def extract_title(soup, job_url):
         try:
-            soup = ExtractorJob._get_soup(job_url)
-            if not soup:
-                return ""
-
             title_tag = soup.find("h1", id="jobad_heading1")
             if not title_tag:
                 logger.debug(f"Title tag not found for {job_url}.")
@@ -146,16 +100,15 @@ class ExtractorJob:
             return ""
 
     @staticmethod
-    def extract_statistics(job_url):
+    def extract_job_statistics(soup, job_link):
         try:
-            soup = ExtractorJob._get_soup(job_url)
             if not soup:
                 return {"views": "0", "applications": "0"}
 
             stats_aside = soup.find("aside", id="job_ad_statistics")
             if not stats_aside:
                 logger.debug(
-                    f"Statistics aside block not found for {job_url}."
+                    f"Statistics aside block not found for {job_link}."
                 )
                 return {"views": "0", "applications": "0"}
 
@@ -174,23 +127,12 @@ class ExtractorJob:
             }
 
         except Exception as e:
-            logger.error(f"Failed to extract statistics for {job_url}: {e}")
+            logger.error(f"Failed to extract statistics for {job_link}: {e}")
             return {"views": "0", "applications": "0"}
 
     @staticmethod
-    def extract_company_details(job_url):
+    def extract_company_details(soup, job_url):
         try:
-            soup = ExtractorJob._get_soup(job_url)
-            if not soup:
-                logger.debug(
-                    f"Failed to extract company details for {job_url}. Soup is None."
-                )
-                return {
-                    "average_salary": "",
-                    "employee_count": "",
-                    "revenue": "",
-                }
-
             company_info_div = soup.find(
                 "div", class_="partners_company_info_main_info"
             )

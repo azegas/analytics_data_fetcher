@@ -7,41 +7,6 @@ from log_config import logger
 class ExtractorArticle:
 
     @staticmethod
-    def extract_link(job):
-        try:
-            job_link_tag = job.find("a", href=True)
-            if not job_link_tag:
-                logger.warning("No link found in job element.")
-                return ""
-            return job_link_tag["href"]
-
-        except Exception as e:
-            logger.error(f"Failed to extract job link: {e}")
-            return ""
-
-    @staticmethod
-    def extract_hours_left(job):
-        try:
-            important_texts = job.find_all(class_="txt_list_important")
-            if not important_texts:
-                logger.debug("No important text elements found.")
-                return ""
-
-            for text_element in important_texts:
-                text = text_element.get_text(strip=True)
-                match = re.search(
-                    r"(\d+)\s+hours?\s+left", text, re.IGNORECASE
-                )
-                if match:
-                    return int(match.group(1))
-
-            return ""
-
-        except Exception as e:
-            logger.error(f"Failed to extract hours left: {e}")
-            return ""
-
-    @staticmethod
     def extract_articles(response):
         try:
             soup = BeautifulSoup(response.text, "html.parser")
@@ -80,4 +45,39 @@ class ExtractorArticle:
 
         except Exception as e:
             logger.error(f"Failed to extract max page number: {e}")
+            return ""
+
+    @staticmethod
+    def extract_link(job):
+        try:
+            job_link_tag = job.find("a", href=True)
+            if not job_link_tag:
+                logger.warning("No link found in job element.")
+                return ""
+            return job_link_tag["href"]
+
+        except Exception as e:
+            logger.error(f"Failed to extract job link: {e}")
+            return ""
+
+    @staticmethod
+    def extract_hours_left(job):
+        try:
+            important_texts = job.find_all(class_="txt_list_important")
+            if not important_texts:
+                logger.debug("No important text elements found.")
+                return ""
+
+            for text_element in important_texts:
+                text = text_element.get_text(strip=True)
+                match = re.search(
+                    r"(\d+)\s+hours?\s+left", text, re.IGNORECASE
+                )
+                if match:
+                    return int(match.group(1))
+
+            return ""
+
+        except Exception as e:
+            logger.error(f"Failed to extract hours left: {e}")
             return ""

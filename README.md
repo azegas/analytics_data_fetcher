@@ -40,7 +40,7 @@
 - Run `pip install -r requirements.txt` to install the required packages
 - Run `pip list` to check if all the required packages(from `requirements.txt`) are installed
 - Run `cd cvbankas` to navigate to the folder where the main script is located
-- Run `python main.py` to run the main script (it might take up to 15-20min)
+- Run `python main.py` to run the main script (it might take up to ~2minutes)
 - Check `data` folder for the fetched data in `json` format
 
 ### Fetching for the second, third, etc. time

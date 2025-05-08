@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 import requests
 import json
 import os
@@ -8,6 +9,7 @@ from dotenv import load_dotenv
 from extractor_article import ExtractorArticle
 from extractor_job import ExtractorJob
 import time
+from parser import parse_job_details
 
 extractor_article = ExtractorArticle()
 extractor_job = ExtractorJob()
@@ -51,7 +53,6 @@ def create_list_of_expiring_job_ads():
                 hours_left = extractor_article.extract_hours_left(job)
                 if hours_left:
                     job_data = {
-                        "job_id": extractor_job.extract_id(job),
                         "link": extractor_article.extract_link(job),
                         "hours_left": hours_left,
                         "from_page": page,
@@ -83,27 +84,10 @@ def extract_details_of_one(job_link):
     try:
         response = requests.get(job_link)
         response.raise_for_status()
+        soup = BeautifulSoup(response.text, "html.parser")
 
-        job_stats = extractor_job.extract_statistics(job_link)
-        company_details = extractor_job.extract_company_details(job_link)
-        salary_details = extractor_job.extract_salary(job_link)
+        job_data = parse_job_details(job_link)
 
-        job_data = {
-            "job_link": job_link,
-            "job_title": extractor_job.extract_title(job_link),
-            "job_category": extractor_job.extract_category(job_link),
-            "job_cities": extractor_job.extract_cities(job_link),
-            "job_views": job_stats["views"],
-            "job_applications": job_stats["applications"],
-            "job_salary": salary_details["salary"],
-            "job_salary_period": salary_details["period"],
-            "company_details": {
-                "company_name": extractor_job.extract_company_name(job_link),
-                "average_salary": company_details.get("average_salary"),
-                "employee_count": company_details.get("employee_count"),
-                "revenue": company_details.get("revenue"),
-            },
-        }
         return job_data
 
     except Exception as e:
@@ -136,48 +120,13 @@ def extract_details_of_many(list_of_expiring_job_ads):
     time.sleep(5)
 
     for job_ad in ads_to_process:
-
-        time.sleep(1)  # polite delay between requests to avoid being blocked
-
-        job_id = job_ad["job_id"]
-        job_link = job_ad["link"]
-
-        try:
-            response = requests.get(job_link)
-            response.raise_for_status()
-
-            job_stats = extractor_job.extract_statistics(job_link)
-            company_details = extractor_job.extract_company_details(job_link)
-            salary_details = extractor_job.extract_salary(job_link)
-
-            job_data = {
-                "job_id": job_id,
-                "job_link": job_link,
-                "job_title": extractor_job.extract_title(job_link),
-                "job_category": extractor_job.extract_category(job_link),
-                "job_cities": extractor_job.extract_cities(job_link),
-                "job_views": job_stats["views"],
-                "job_applications": job_stats["applications"],
-                "job_salary": salary_details["salary"],
-                "job_salary_period": salary_details["period"],
-                "company_details": {
-                    "company_name": extractor_job.extract_company_name(
-                        job_link
-                    ),
-                    "average_salary": company_details.get("average_salary"),
-                    "employee_count": company_details.get("employee_count"),
-                    "revenue": company_details.get("revenue"),
-                },
-            }
+        job_data = parse_job_details(job_ad["link"])
+        if job_data:
             jobs.append(job_data)
             fetched_count += 1
-            remaining = total_ads - fetched_count
             logger.info(
-                f"Fetched {fetched_count}/{total_ads} | Remaining: {remaining}"
+                f"Fetched {fetched_count}/{total_ads} | Remaining: {total_ads - fetched_count}"
             )
-
-        except Exception as e:
-            logger.error(f"Error fetching data for job ad {job_link}: {e}")
 
     logger.info(
         f"Finished fetching. Fetched {fetched_count} out of {total_ads}."
