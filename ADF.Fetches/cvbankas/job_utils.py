@@ -112,7 +112,6 @@ def extract_details_of_one(job_link):
 
 
 def extract_details_of_many(list_of_expiring_job_ads):
-
     total_ads = len(list_of_expiring_job_ads)
     fetched_count = 0
     jobs = []
@@ -137,6 +136,8 @@ def extract_details_of_many(list_of_expiring_job_ads):
     time.sleep(5)
 
     for job_ad in ads_to_process:
+
+        time.sleep(1)  # polite delay between requests to avoid being blocked
 
         job_id = job_ad["job_id"]
         job_link = job_ad["link"]
@@ -190,7 +191,8 @@ def save_cvbankas_jobs_locally(jobs):
         "jobs": jobs,
     }
 
-    file_path = os.path.join(os.getenv("BASE_DIR"), "data/cvbankas_ads.json")
+    base_dir = os.getenv("BASE_DIR", os.getcwd())
+    file_path = os.path.join(base_dir, "data/cvbankas_ads.json")
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
     try:

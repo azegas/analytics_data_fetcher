@@ -34,7 +34,7 @@ console_handler = logging.StreamHandler()
 console_handler.setFormatter(formatter)
 
 # Get the base directory from environment variables
-base_dir = os.getenv("BASE_DIR", ".")
+base_dir = os.getenv("BASE_DIR", os.getcwd())
 
 # Construct full log path
 log_dir = os.path.join(base_dir, "logs")
