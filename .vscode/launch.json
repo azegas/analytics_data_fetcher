@@ -6,7 +6,8 @@
       "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/ADF.Fetches/cvbankas/main.py",
-      "console": "internalConsole"
+      "console": "internalConsole",
+      "cwd": "${workspaceFolder}/ADF.Fetches/cvbankas"
     }
   ]
 }

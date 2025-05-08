@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 from log_config import logger
-from extractor_job import ExtractorJob
+from extractors.extractor_job import ExtractorJob
 
 extractor_job = ExtractorJob()
 
