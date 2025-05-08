@@ -16,14 +16,6 @@ extractor_job = ExtractorJob()
 
 load_dotenv()
 
-try:
-    fetch_limit = int(os.getenv("FETCH_LIMIT", 0))
-except ValueError:
-    fetch_limit = 0
-    logger.warning(
-        "FETCH_LIMIT in .env is not a valid integer. Defaulting to 0."
-    )
-
 
 def create_list_of_expiring_job_ads():
     expiring_ads = []
@@ -80,6 +72,7 @@ def create_list_of_expiring_job_ads():
 
 
 def extract_details_of_one(job_link):
+    logger.info(f"Fetching a single specific job ad from {job_link}")
 
     try:
         response = requests.get(job_link)
@@ -99,6 +92,14 @@ def extract_details_of_many(list_of_expiring_job_ads):
     total_ads = len(list_of_expiring_job_ads)
     fetched_count = 0
     jobs = []
+
+    try:
+        fetch_limit = int(os.getenv("FETCH_LIMIT", 0))
+    except ValueError:
+        fetch_limit = 0
+        logger.warning(
+            "FETCH_LIMIT in .env is not a valid integer. Defaulting to 0."
+        )
 
     if fetch_limit > total_ads:
         ads_to_process = list_of_expiring_job_ads[:1]
@@ -134,19 +135,38 @@ def extract_details_of_many(list_of_expiring_job_ads):
     return jobs
 
 
-def save_cvbankas_jobs_locally(jobs):
-    data_to_save = {
-        "fetch_date": datetime.now().strftime("%Y-%m-%d %H:%M"),
-        "jobs": jobs,
-    }
-
-    base_dir = os.getenv("BASE_DIR", os.getcwd())
-    file_path = os.path.join(base_dir, "data/cvbankas_ads.json")
-    os.makedirs(os.path.dirname(file_path), exist_ok=True)
-
+def save_job_ads(jobs):
     try:
+        save_location = os.getenv("DATA_SAVE_LOCATION", "LOCAL").upper()
+
+        if save_location == "LOCAL":
+            save_locally(jobs)
+        else:
+            save_to_db(jobs)
+            pass
+
+    except IOError as e:
+        logger.error(f"Failed to save data: {e}")
+
+
+def save_locally(jobs):
+    try:
+        data_to_save = {
+            "fetch_date": datetime.now().strftime("%Y-%m-%d %H:%M"),
+            "jobs": jobs,
+        }
+
+        base_dir = os.getenv("BASE_DIR", os.getcwd())
+        file_path = os.path.join(base_dir, "data/cvbankas_ads.json")
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump(data_to_save, f, ensure_ascii=False, indent=4)
         logger.info(f"Data saved to {file_path}")
+
     except IOError as e:
-        logger.error(f"Failed to save data: {e}")
+        logger.error(f"Failed to save data locally: {e}")
+
+
+def save_to_db(jobs):
+    pass

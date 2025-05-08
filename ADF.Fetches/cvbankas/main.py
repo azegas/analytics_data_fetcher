@@ -1,6 +1,6 @@
 from job_utils import (
     extract_details_of_many,
-    save_cvbankas_jobs_locally,
+    save_job_ads,
     create_list_of_expiring_job_ads,
     extract_details_of_one,
 )
@@ -13,7 +13,6 @@ def main():
 
     load_dotenv()
 
-    save_location = os.getenv("DATA_SAVE_LOCATION", "LOCAL").upper()
     fetch_specific = os.getenv("FETCH_SPECIFIC", "")
 
     if fetch_specific:
@@ -24,10 +23,7 @@ def main():
             expiring_job_ads_list
         )
 
-    if save_location == "LOCAL":
-        save_cvbankas_jobs_locally(expiring_job_ads_details)
-    else:
-        pass
+    save_job_ads(expiring_job_ads_details)
 
 
 if __name__ == "__main__":

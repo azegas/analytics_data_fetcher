@@ -57,7 +57,7 @@
 ### TODO's
 
 - [x] be able to fetch data from cvbankas manually, data saved in json format
-- [ ] be able to fetch for a specific id (for testing purposes)
+- [x] be able to fetch for a specific id (for testing purposes)
 - [ ] save data in SQL Server database locally (for testing purposes)
 - [ ] be able to fetch data from cvbankas automatically, data saved in SQL Server database locally (for testing purposes)
 - [ ] fetch data from cvbankas once a day (only the non existing id's) (raspberry pi/VM, scheduled with cron)
