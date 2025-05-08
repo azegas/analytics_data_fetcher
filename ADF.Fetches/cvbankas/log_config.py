@@ -19,24 +19,31 @@ load_dotenv()
 log_level_str = os.getenv("LOG_LEVEL", "INFO").upper()
 log_level = getattr(logging, log_level_str, logging.INFO)
 
-# Configure logging
+# Configure logger
 logger = logging.getLogger(__name__)
 logger.setLevel(log_level)
 
-# Create formatters
+# Create formatter
 formatter = logging.Formatter(
     "%(asctime)s [%(levelname)s] %(funcName)s - %(message)s",
     "%Y/%m/%d %H:%M:%S",
 )
 
-# Create handlers
+# Console handler
 console_handler = logging.StreamHandler()
 console_handler.setFormatter(formatter)
 
 # Get the base directory from environment variables
-base_dir = os.getenv("BASE_DIR")
-log_file_path = os.path.join(base_dir, "logs/app.log")
+base_dir = os.getenv("BASE_DIR", ".")
 
+# Construct full log path
+log_dir = os.path.join(base_dir, "logs")
+log_file_path = os.path.join(log_dir, "app.log")
+
+# Ensure the log directory exists
+os.makedirs(log_dir, exist_ok=True)
+
+# File handler
 file_handler = logging.FileHandler(log_file_path)
 file_handler.setFormatter(formatter)
 
