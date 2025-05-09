@@ -1,16 +1,13 @@
-from utils.job_utils import (
-    create_list_of_expiring_job_ads,
-)
-
-from extractors.extractor_other import (
-    extract_details_of_many,
-    extract_details_of_one,
-)
-
-from saving.saving_logic import save_job_ads
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
 from log_config import logger
+from utils import decide_if_fetching_many_or_one
+from db_stuff import (
+    decide_upon_saving_location,
+    save_job_ads,
+    count_records_in_db,
+    initialize_sqlite_db,
+)
 
 
 def main():
@@ -21,28 +18,11 @@ def main():
     fetch_specific = os.getenv("FETCH_SPECIFIC", "")
     saving_location = os.getenv("DATA_SAVE_LOCATION")
 
-    if not saving_location:
-        logger.error("DATA_SAVE_LOCATION is not set in .env, go do that first")
-        return
+    decide_upon_saving_location(saving_location)
+    initialize_sqlite_db()
+    count_records_in_db()
 
-    if saving_location not in {"LOCAL", "SQLITE_DB"}:
-        logger.error(
-            "DATA_SAVE_LOCATION must be either 'LOCAL' or 'SQLITE_DB'"
-        )
-        return
-
-    if fetch_specific:
-        expiring_job_ads_details = [extract_details_of_one(fetch_specific)]
-    else:
-        expiring_job_ads_list = create_list_of_expiring_job_ads()
-
-        if not expiring_job_ads_list:
-            logger.info("No expiring job ads found. Stopping the script.")
-            return
-
-        expiring_job_ads_details = extract_details_of_many(
-            expiring_job_ads_list
-        )
+    expiring_job_ads_details = decide_if_fetching_many_or_one(fetch_specific)
 
     save_job_ads(expiring_job_ads_details, saving_location)
 

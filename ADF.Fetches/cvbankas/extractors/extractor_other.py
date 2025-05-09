@@ -59,14 +59,14 @@ def extract_details_of_many(list_of_expiring_job_ads):
         )
     else:
         ads_to_process = list_of_expiring_job_ads
-        logger.info(f"Fetching all {total_ads} job ads")
+        logger.info(f"Will be fetching details {total_ads} job ads")
 
-    logger.info("Fetch started...")
+    logger.info("Detail feching started...")
 
     time.sleep(5)
 
     for job_ad in ads_to_process:
-        job_data = parse_job_details(job_ad["link"])
+        job_data = parse_job_details(job_ad["job_link"])
         if job_data:
             jobs.append(job_data)
             fetched_count += 1

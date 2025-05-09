@@ -39,7 +39,8 @@ class ExtractorArticle:
                 return ""
 
             last_page_number = last_a_tag.get_text(strip=True)
-            logger.info(f"Found last page number: {last_page_number}")
+            logger.debug(f"Found last page number: {last_page_number}")
+
             return int(last_page_number)
 
         except Exception as e:

@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from log_config import logger
 from extractors.extractor_job import ExtractorJob
+from utils2 import extract_after_last_slash
 
 extractor_job = ExtractorJob()
 
@@ -17,6 +18,7 @@ def parse_job_details(job_url):
         company_details = extractor_job.extract_company_details(soup, job_url)
 
         job_data = {
+            "job_id": extract_after_last_slash(job_url),
             "job_link": job_url,
             "job_title": extractor_job.extract_title(soup, job_url),
             "job_category": extractor_job.extract_category(soup, job_url),
