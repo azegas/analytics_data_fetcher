@@ -9,6 +9,7 @@ from other_stuff.db_stuff import (
     initialize_sqlite_db,
 )
 from extractors.extractor_other import extract_details_of_one
+from other_stuff.send_email import send_email
 
 
 def main():
@@ -29,6 +30,15 @@ def main():
         processed_jobs = process_expiring_job_ads()
 
     save_job_ads(processed_jobs, saving_location)
+
+    total_records_in_db = count_records_in_db()
+
+    send_email(
+        "analytics_data_fetcher",
+        f"{len(processed_jobs)} new expiring job/s were found and added to 'job_ads' DB. Total records in job_ads DB: {total_records_in_db}",
+    )
+
+    logger.info("DONE. See you later.")
 
 
 if __name__ == "__main__":

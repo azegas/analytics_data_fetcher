@@ -129,8 +129,6 @@ def save_to_sqlite_db(jobs):
 
     logger.info("Data saved to SQLite DB successfully.")
 
-    count_records_in_db()
-
     conn.close()
 
 
