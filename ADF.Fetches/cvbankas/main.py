@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 from other_stuff.log_config import logger
 from utils import process_expiring_job_ads
-from db_stuff import (
+from other_stuff.db_stuff import (
     decide_upon_saving_location,
     save_job_ads,
     count_records_in_db,

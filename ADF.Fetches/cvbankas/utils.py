@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from extractors.extractor_other import extract_details_of_many
 from extractors.extractor_article import ExtractorArticle
 from extractors.extractor_job import ExtractorJob
-from db_stuff import get_existing_job_ids_from_db
+from other_stuff.db_stuff import get_existing_job_ids_from_db
 
 from utils2 import extract_after_last_slash
 
