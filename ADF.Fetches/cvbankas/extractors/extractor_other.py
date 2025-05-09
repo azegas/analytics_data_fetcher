@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from extractors.extractor_article import ExtractorArticle
 from extractors.extractor_job import ExtractorJob
 from extractors.parser import parse_job_details
-from log_config import logger
+from other_stuff.log_config import logger
 
 extractor_article = ExtractorArticle()
 extractor_job = ExtractorJob()

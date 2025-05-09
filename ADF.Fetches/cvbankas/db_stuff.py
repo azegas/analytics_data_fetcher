@@ -1,4 +1,4 @@
-from log_config import logger
+from other_stuff.log_config import logger
 import os
 import json
 import sqlite3

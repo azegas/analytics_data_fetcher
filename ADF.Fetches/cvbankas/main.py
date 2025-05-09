@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from log_config import logger
+from other_stuff.log_config import logger
 from utils import process_expiring_job_ads
 from db_stuff import (
     decide_upon_saving_location,

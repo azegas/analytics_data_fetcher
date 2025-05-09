@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from log_config import logger
+from other_stuff.log_config import logger
 from extractors.extractor_job import ExtractorJob
 from utils2 import extract_after_last_slash
 

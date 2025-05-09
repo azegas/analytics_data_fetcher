@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import re
-from log_config import logger
+from other_stuff.log_config import logger
 
 
 class ExtractorArticle:
