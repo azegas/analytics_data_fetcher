@@ -22,10 +22,7 @@
 # +------------ Minute (0 - 59)
 
 # I am alive cron job every minute
-* * * * * echo "I am alive at $(date)" >> /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/cvbankas/data/logs/cron_aliveness.log 2>&1
-
-# clean log files every 3 days
-# 0 0 */3 * * /home/arvypi/GIT/mm2/helpers/clean_logs.sh
+*/20 * * * * echo "I am alive at $(date)" >> /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/cvbankas/data/logs/cron_aliveness.log 2>&1
 
 # Run script every day at 02:00 AM
 0 2 * * * /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/venv/bin/python /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/cvbankas/main.py
