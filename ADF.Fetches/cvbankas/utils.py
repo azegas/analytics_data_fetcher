@@ -1,5 +1,5 @@
 import requests
-from config import URL
+from other_stuff.config import URL
 from log_config import logger
 from dotenv import load_dotenv
 

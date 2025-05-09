@@ -3,7 +3,7 @@ import time
 
 import requests
 from bs4 import BeautifulSoup
-from config import URL
+from other_stuff.config import URL
 from dotenv import load_dotenv
 from extractors.extractor_article import ExtractorArticle
 from extractors.extractor_job import ExtractorJob
