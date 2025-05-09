@@ -143,7 +143,7 @@ def get_existing_job_ids_from_db():
     try:
         cursor.execute("SELECT job_id FROM job_ads")
         existing_job_ids = {row[0] for row in cursor.fetchall()}
-        logger.info(f"Existing job IDs in database: {existing_job_ids}")
+        logger.debug(f"Existing job IDs in database: {existing_job_ids}")
         return existing_job_ids
     except sqlite3.Error as e:
         logger.error(f"Error retrieving existing job IDs: {e}")

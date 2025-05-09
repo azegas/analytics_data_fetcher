@@ -41,7 +41,7 @@ def decide_if_fetching_many_or_one(fetch_specific):
 def create_list_of_expiring_job_ads():
     expiring_ads = []
     pages_count = 0
-    repeating_jobs = 0
+    repeating_jobs_count = 0
     repeating_jobs_present = False
 
     existing_job_ids = get_existing_job_ids_from_db()
@@ -58,19 +58,24 @@ def create_list_of_expiring_job_ads():
             )
 
             if not page_has_expiring_ads:
-                logger.info(
-                    f"No expiring ads found on page {current_page_number}. Breaking loop. Stopping the search for expiring job ads."
-                )
+                if page_repeats > 0:
+                    logger.info(
+                        f"Page {current_page_number} had expiring ads, but all {page_repeats} of them were already in the database. Stopping the search."
+                    )
+                else:
+                    logger.info(
+                        f"Page {current_page_number} had no expiring ads at all. Stopping the search."
+                    )
                 break
 
             expiring_ads.extend(new_ads)
             pages_count += 1
-            repeating_jobs += page_repeats
+            repeating_jobs_count += page_repeats
             repeating_jobs_present = repeating_jobs_present or page_has_repeats
 
         if repeating_jobs_present:
             logger.info(
-                f"Skipped {repeating_jobs} jobs that already exist in the database."
+                f"Skipped {repeating_jobs_count} jobs that already exist in the database."
             )
         else:
             logger.info("No repeating jobs found in any of the pages.")
@@ -89,7 +94,6 @@ def create_list_of_expiring_job_ads():
 
 def process_single_page(page, existing_job_ids):
     url = f"{URL}/?page={page}"
-    logger.info(f"Processing page: {page}")
 
     response = requests.get(url)
     response.raise_for_status()
@@ -108,7 +112,7 @@ def process_single_page(page, existing_job_ids):
             job_id = extract_after_last_slash(
                 extractor_article.extract_link(job)
             )
-            logger.info(f"Checking job ID: {job_id}")
+            logger.debug(f"Checking job ID: {job_id}")
             if job_id not in existing_job_ids:
                 job_data = {
                     "job_id": job_id,
