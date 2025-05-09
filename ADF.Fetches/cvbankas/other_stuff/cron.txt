@@ -1,6 +1,9 @@
 # Export current cron jobs (optional backup)
 # crontab -l > cron_backup.txt
 
+# Add cronjob to contab
+# crontab cron.txt
+
 # Edit the crontab
 # crontab -e
 
