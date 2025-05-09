@@ -33,10 +33,14 @@ def main():
 
     total_records_in_db = count_records_in_db()
 
-    send_email(
-        "analytics_data_fetcher",
-        f"{len(processed_jobs)} new expiring job/s were found and added to 'job_ads' DB. Total records in job_ads DB: {total_records_in_db}",
-    )
+    email_subject = "Analytics Data Fetcher Update"
+    email_body = f"""Job Processing Summary:
+
+    - New expiring jobs found and added: {len(processed_jobs)}
+    - Total records in job_ads DB: {total_records_in_db}
+    """
+
+    send_email(email_subject, email_body)
 
     logger.info("DONE. See you later.")
 
