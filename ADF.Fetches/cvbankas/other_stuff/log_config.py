@@ -37,7 +37,7 @@ console_handler.setFormatter(formatter)
 base_dir = os.getenv("BASE_DIR", os.getcwd())
 
 # Construct full log path
-log_dir = os.path.join(base_dir, "logs")
+log_dir = os.path.join(base_dir, "data/logs")
 log_file_path = os.path.join(log_dir, "app.log")
 
 # Ensure the log directory exists
