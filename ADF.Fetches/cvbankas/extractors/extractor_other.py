@@ -38,8 +38,10 @@ def extract_details_of_many(list_of_expiring_job_ads):
     fetched_count = 0
     jobs = []
 
+    # TODO figure out why fetch limit is not working
     try:
         fetch_limit = int(os.getenv("FETCH_LIMIT", 0))
+        logger.info(f"FETCH_LIMIT is set to {fetch_limit}.")
     except ValueError:
         fetch_limit = 0
         logger.warning(

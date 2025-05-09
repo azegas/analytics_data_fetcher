@@ -1,13 +1,14 @@
 import os
 from dotenv import load_dotenv
 from log_config import logger
-from utils import decide_if_fetching_many_or_one
+from utils import procesiukaszn
 from db_stuff import (
     decide_upon_saving_location,
     save_job_ads,
     count_records_in_db,
     initialize_sqlite_db,
 )
+from extractors.extractor_other import extract_details_of_one
 
 
 def main():
@@ -22,7 +23,10 @@ def main():
     initialize_sqlite_db()
     count_records_in_db()
 
-    expiring_job_ads_details = decide_if_fetching_many_or_one(fetch_specific)
+    if fetch_specific:
+        expiring_job_ads_details = [extract_details_of_one(fetch_specific)]
+    else:
+        expiring_job_ads_details = procesiukaszn()
 
     save_job_ads(expiring_job_ads_details, saving_location)
 
