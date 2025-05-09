@@ -1,7 +1,11 @@
-# crontab -l > cron.txt
-# crontab cron.txt
+# Export current cron jobs (optional backup)
+# crontab -l > cron_backup.txt
+
+# Edit the crontab
 # crontab -e
-# crontab -
+
+# Check if your cron jobs were added
+# crontab -l
 
 # dont use $USER - it will not find the user... at least did not bother to find how to make it work. .bashrc?
 
@@ -24,4 +28,4 @@
 0 2 * * * /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/venv/bin/python /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/cvbankas/main.py
 
 # Run script every minute from 
-* * * * * * /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/venv/bin/python /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/cvbankas/main.py
+* * * * * /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/venv/bin/python /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/cvbankas/main.py
