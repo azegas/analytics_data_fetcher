@@ -34,49 +34,37 @@ def extract_details_of_one(job_link):
 
 
 def extract_details_of_many(list_of_expiring_job_ads):
-    total_ads = len(list_of_expiring_job_ads)
-    fetched_count = 0
     jobs = []
+    fetched_count = 0
+    count_of_expiring_job_ads = len(list_of_expiring_job_ads)
 
-    # TODO figure out why fetch limit is not working
-    try:
-        fetch_limit = int(os.getenv("FETCH_LIMIT", 0))
-        logger.info(f"FETCH_LIMIT is set to {fetch_limit}.")
-    except ValueError:
-        fetch_limit = 0
-        logger.warning(
-            "FETCH_LIMIT in .env is not a valid integer. Defaulting to 0."
-        )
-
-    if fetch_limit > total_ads:
-        ads_to_process = list_of_expiring_job_ads[:1]
-        logger.warning(
-            f"FETCH_LIMIT ({fetch_limit}) is greater than total ads ({total_ads}) "
-            f"Fetching only 1 job ad instead."
-        )
-    elif 0 < fetch_limit <= total_ads:
-        ads_to_process = list_of_expiring_job_ads[:fetch_limit]
+    if count_of_expiring_job_ads == 0:
         logger.info(
-            f"Fetching {fetch_limit} job ads as requested in FETCH_LIMIT"
+            f"Nothing to fetch, count_of_expiring_job_ads is {count_of_expiring_job_ads}."
         )
-    else:
-        ads_to_process = list_of_expiring_job_ads
-        logger.info(f"Will be fetching details {total_ads} job ads")
+        logger.info("Stopping the script, BYE!")
+        exit()
+
+    logger.info(
+        f"Will be fetching details for {count_of_expiring_job_ads} job ads"
+    )
+
+    time.sleep(3)
 
     logger.info("Detail feching started...")
 
-    time.sleep(5)
+    time.sleep(3)
 
-    for job_ad in ads_to_process:
+    for job_ad in list_of_expiring_job_ads:
         job_data = parse_job_details(job_ad["job_link"])
         if job_data:
             jobs.append(job_data)
             fetched_count += 1
             logger.info(
-                f"Fetched {fetched_count}/{total_ads} | Remaining: {total_ads - fetched_count}"
+                f"Fetched {fetched_count}/{count_of_expiring_job_ads} | Remaining: {count_of_expiring_job_ads - fetched_count}"
             )
 
     logger.info(
-        f"Finished fetching. Fetched {fetched_count} out of {total_ads}."
+        f"Finished fetching. Fetched {fetched_count} out of {count_of_expiring_job_ads}."
     )
     return jobs

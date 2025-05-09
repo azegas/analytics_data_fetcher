@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from log_config import logger
-from utils import procesiukaszn
+from utils import process_expiring_job_ads
 from db_stuff import (
     decide_upon_saving_location,
     save_job_ads,
@@ -24,11 +24,11 @@ def main():
     count_records_in_db()
 
     if fetch_specific:
-        expiring_job_ads_details = [extract_details_of_one(fetch_specific)]
+        processed_jobs = [extract_details_of_one(fetch_specific)]
     else:
-        expiring_job_ads_details = procesiukaszn()
+        processed_jobs = process_expiring_job_ads()
 
-    save_job_ads(expiring_job_ads_details, saving_location)
+    save_job_ads(processed_jobs, saving_location)
 
 
 if __name__ == "__main__":
