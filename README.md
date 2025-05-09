@@ -59,6 +59,8 @@
 - [x] be able to fetch for a specific id (for testing purposes)
 - [x] save data in SQLite db on raspberry pi
 - [ ] break the big functions into smaller ones
-- [ ] create schedule solution for the script to run once a day (raspberry pi/VM, scheduled with cron)
+- [x] create schedule solution for the script to run once a day (raspberry pi/VM, scheduled with cron)
+- [ ] send email informing about successfull run and new fetches
+- [x] send email about aliveness(each day)
 - [ ] create a backup solution for the SQLite db (raspberry pi/VM, scheduled with cron)
 - [ ] after one month of running, pass the data to Power Bi for a in depth report
