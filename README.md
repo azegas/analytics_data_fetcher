@@ -64,3 +64,4 @@
 - [x] send email about aliveness(each day)
 - [ ] create a backup solution for the SQLite db (raspberry pi/VM, scheduled with cron)
 - [ ] after one month of running, pass the data to Power Bi for a in depth report
+- [ ] move I am alive function elsewhere

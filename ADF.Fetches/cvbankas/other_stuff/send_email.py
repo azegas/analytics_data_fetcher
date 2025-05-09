@@ -25,3 +25,23 @@ def send_email(subject, body):
         server.sendmail(from_email, to_emails, msg.as_string())
 
         logger.info("Email was sent")
+
+
+def send_i_am_alive_email(subject, body):
+    logger.info("Preparing to send 'I am alive' email")
+
+    from_email = os.getenv("EMAIL_FROM_WHO")
+    password = os.getenv("EMAIL_FROM_WHO_PASSWORD")
+    to_emails = os.getenv("I_AM_ALIVE_EMAIL_RECIPIENT").split(",")
+    smtp_server = os.getenv("SMTP_SERVER")
+
+    msg = MIMEText(body)
+    msg["Subject"] = subject
+    msg["From"] = from_email
+    msg["To"] = ", ".join(to_emails)
+
+    with smtplib.SMTP_SSL(smtp_server, 465) as server:
+        server.login(from_email, password)
+        server.sendmail(from_email, to_emails, msg.as_string())
+
+        logger.info("'I am alive'Email was sent")

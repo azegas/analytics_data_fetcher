@@ -29,3 +29,4 @@
 
 # Run script every minute from 
 * * * * * /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/venv/bin/python /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/cvbankas/main.py
+* * * * * /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/venv/bin/python /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/cvbankas/other_stuff/i_am_alive_email.py
