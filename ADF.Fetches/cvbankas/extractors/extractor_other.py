@@ -61,7 +61,7 @@ def extract_details_of_many(list_of_expiring_job_ads):
             jobs.append(job_data)
             fetched_count += 1
             logger.info(
-                f"Fetched {fetched_count}/{count_of_expiring_job_ads} | Remaining: {count_of_expiring_job_ads - fetched_count}"
+                f"Fetched {job_data['job_id']} {fetched_count}/{count_of_expiring_job_ads} | Remaining: {count_of_expiring_job_ads - fetched_count}"
             )
 
     logger.info(
