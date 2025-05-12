@@ -44,4 +44,4 @@ def send_i_am_alive_email(subject, body):
         server.login(from_email, password)
         server.sendmail(from_email, to_emails, msg.as_string())
 
-        logger.info("'I am alive'Email was sent")
+        logger.info("'I am alive' email was sent")

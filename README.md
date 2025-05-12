@@ -57,7 +57,7 @@
 
 - [x] be able to fetch data from cvbankas manually, data saved in json format
 - [x] be able to fetch for a specific id (for testing purposes)
-- [x] save data in SQLite db on raspberry pi
+- [x] save data in SQLite db on raspberry pi (ssh arvypi@192.168.0.82)
 - [ ] break the big functions into smaller ones
 - [x] create schedule solution for the script to run once a day (raspberry pi/VM, scheduled with cron)
 - [ ] send email informing about successfull run and new fetches

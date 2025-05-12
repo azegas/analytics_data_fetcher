@@ -21,13 +21,13 @@
 # | +---------- Hour (0 - 23)
 # +------------ Minute (0 - 59)
 
+# Run main script every day at at 2 AM, 10 AM, 3 PM, and 8 PM
+0 2,10,15,20 * * * /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/venv/bin/python /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/cvbankas/main.py
+
 # I am alive cron every day at 15:00 (3:00 PM)
-0 15 * * * echo "I am alive at $(date)" >> /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/cvbankas/data/logs/cron_aliveness.log 2>&1
-* 15 * * * /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/venv/bin/python /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/cvbankas/i_am_alive_email.py
+# 0 15 * * * echo "I am alive at $(date)" >> /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/cvbankas/data/logs/cron_aliveness.log 2>&1
+# * 15 * * * /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/venv/bin/python /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/cvbankas/i_am_alive_email.py
 
-# Run main script every day at 10:00 AM and 8:00 PM (20:00)
-0 10,20 * * * /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/venv/bin/python /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/cvbankas/main.py
-
-# Run script every minute from 
+# (FOR TESTING) Run script every minute from 
 # * * * * * /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/venv/bin/python /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/cvbankas/main.py
 # * * * * * /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/venv/bin/python /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/cvbankas/i_am_alive_email.py

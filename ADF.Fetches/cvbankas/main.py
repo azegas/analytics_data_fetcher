@@ -33,12 +33,10 @@ def main():
 
     total_records_in_db = count_records_in_db()
 
-    email_subject = "Analytics Data Fetcher Update"
-    email_body = f"""Job Processing Summary:
-
-    - New expiring jobs found and added: {len(processed_jobs)}
-    - Total records in job_ads DB: {total_records_in_db}
-    """
+    email_subject = (
+        f"ADF: new: {len(processed_jobs)}, total: {total_records_in_db}"
+    )
+    email_body = ""
 
     send_email(email_subject, email_body)
 
