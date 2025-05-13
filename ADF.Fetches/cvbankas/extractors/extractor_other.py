@@ -9,6 +9,7 @@ from extractors.extractor_article import ExtractorArticle
 from extractors.extractor_job import ExtractorJob
 from extractors.parser import parse_job_details
 from other_stuff.log_config import logger
+from other_stuff.send_email import send_email
 
 extractor_article = ExtractorArticle()
 extractor_job = ExtractorJob()
@@ -33,7 +34,11 @@ def extract_details_of_one(job_link):
         return None
 
 
-def extract_details_of_many(list_of_expiring_job_ads):
+def extract_details_of_many(
+    list_of_expiring_job_ads,
+    total_articles_count,
+    total_repeating_articles_count,
+):
     jobs = []
     fetched_count = 0
     count_of_expiring_job_ads = len(list_of_expiring_job_ads)
@@ -42,6 +47,11 @@ def extract_details_of_many(list_of_expiring_job_ads):
         logger.info(
             f"Nothing to fetch, count_of_expiring_job_ads is {count_of_expiring_job_ads}."
         )
+
+        email_subject = f"ADF: no new jobs, {total_repeating_articles_count} of {total_articles_count} are repeating ones."
+        email_body = ""
+        send_email(email_subject, email_body)
+
         logger.info("Stopping the script, BYE!")
         exit()
 

@@ -69,7 +69,9 @@ def process_expiring_job_ads():
     )
 
     # Extract details of the articles
-    article_details = extract_details_of_many(checked_articles)
+    article_details = extract_details_of_many(
+        checked_articles, total_articles_count, total_repeating_articles_count
+    )
 
     return article_details
 
