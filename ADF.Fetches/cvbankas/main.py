@@ -7,6 +7,7 @@ from other_stuff.db_stuff import (
     save_job_ads,
     count_records_in_db,
     initialize_sqlite_db,
+    get_db_path,
 )
 from extractors.extractor_other import extract_details_of_one
 from other_stuff.send_email import send_email
@@ -33,12 +34,12 @@ def main():
 
     total_records_in_db = count_records_in_db()
 
-    email_subject = (
-        f"ADF: new: {len(processed_jobs)}, total: {total_records_in_db}"
-    )
-    email_body = ""
+    email_subject = f"CVBankas fetch - new: {len(processed_jobs)}, total - {total_records_in_db}"
+    email_body = "To see the records, open the attached sqlite file :)"
 
-    send_email(email_subject, email_body)
+    db_path = get_db_path()
+
+    send_email(email_subject, email_body, attachment_path=db_path)
 
     logger.info("DONE. See you later.")
 

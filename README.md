@@ -58,10 +58,8 @@
 - [x] be able to fetch data from cvbankas manually, data saved in json format
 - [x] be able to fetch for a specific id (for testing purposes)
 - [x] save data in SQLite db on raspberry pi (ssh arvypi@192.168.0.82)
-- [ ] break the big functions into smaller ones
 - [x] create schedule solution for the script to run once a day (raspberry pi/VM, scheduled with cron)
-- [ ] send email informing about successfull run and new fetches
+- [x] send email informing about successfull run and new fetches
 - [x] send email about aliveness(each day)
-- [ ] create a backup solution for the SQLite db (raspberry pi/VM, scheduled with cron)
+- [x] create a backup solution for the SQLite db (raspberry pi/VM, scheduled with cron) (send the sqlite file itself instead)
 - [ ] after one month of running, pass the data to Power Bi for a in depth report
-- [ ] move I am alive function elsewhere

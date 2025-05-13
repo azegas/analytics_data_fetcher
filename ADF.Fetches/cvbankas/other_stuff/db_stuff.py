@@ -8,9 +8,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def get_db_connection():
+def get_db_path():
     base_dir = os.getenv("BASE_DIR", os.getcwd())
     db_path = os.path.join(base_dir, "data", "job_ads.db")
+    return db_path
+
+
+def get_db_connection():
+    db_path = get_db_path()
     conn = sqlite3.connect(db_path)
     return conn
 
@@ -20,8 +25,7 @@ def initialize_sqlite_db():
 
     load_dotenv()
 
-    base_dir = os.getenv("BASE_DIR", os.getcwd())
-    db_path = os.path.join(base_dir, "data", "job_ads.db")
+    db_path = get_db_path()
 
     if os.path.exists(db_path):
         logger.info("SQLITE database already exists.")
