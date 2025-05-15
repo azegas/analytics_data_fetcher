@@ -21,8 +21,8 @@
 # | +---------- Hour (0 - 23)
 # +------------ Minute (0 - 59)
 
-# Run main script every day at at 2 AM, 10 AM, 3 PM, and 8 PM
-0 2,10,15,20 * * * /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/venv/bin/python /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/cvbankas/main.py
+# Run main script every day at at 2 AM
+0 2 * * * /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/venv/bin/python /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/cvbankas/main.py
 
 # I am alive cron every day at 15:00 (3:00 PM)
 # 0 15 * * * echo "I am alive at $(date)" >> /home/arvypi/GIT/analytics_data_fetcher/ADF.Fetches/cvbankas/data/logs/cron_aliveness.log 2>&1
